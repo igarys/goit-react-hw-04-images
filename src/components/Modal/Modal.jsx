@@ -1,17 +1,14 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import css from './Modal.module.css';
 
-export class Modal extends Component {
-  componentDidMount() {
-    document.addEventListener('keydown', this.props.handleKeyDown);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.props.handleKeyDown);
-  }
-
-  render() {
-    const { largeImageURL, alt, handleClick } = this.props;
+export const Modal = ({handleKeyDown, handleClick, largeImageURL, alt}) => {
+ 
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [handleKeyDown]);
 
     return (
       <div>
@@ -19,7 +16,7 @@ export class Modal extends Component {
           <div
             className={css.Modal}
             onClick={handleClick}
-            onKeyDown={this.handleKeyDown}
+            onKeyDown={handleKeyDown}
           >
             <img src={largeImageURL} alt={alt} />
           </div>
@@ -27,4 +24,4 @@ export class Modal extends Component {
       </div>
     );
   }
-}
+

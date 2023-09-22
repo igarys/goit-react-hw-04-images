@@ -1,75 +1,61 @@
-import { Component } from "react";
 import { ImageGallery } from "./ImageGallery";
 import { Searchbar } from "./Searchbar";
-import './styles.css';
 import {fetchApi} from '../services'
+import { useState } from "react";
+import { useEffect } from "react";
+import './styles.css';
 
+export const App = () => {
 
-export class App extends Component {
-  state = {
-    inputValue: '',
-    value: '',
-    images: [],
-    isLoading: false,
-    page: 1,
+  const [inputValue, setInputValue] = useState('')
+  const [value, setValue] = useState('')
+  const [images, setImages] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [page, setPage] = useState(1)
+
+  const onChange = e => {
+    setInputValue(e.target.value);
   };
-
-  onChange = e => {
-    this.setState({ inputValue: e.target.value });
-  };
-  onSubmit = (e, nextState) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    this.setState({ isLoading: true });
-    this.setState({ images: [] });
-    this.setState({ value: this.state.inputValue });
-    this.setState({ inputValue: '' });
-    this.setState({ page: 1 });
+    setIsLoading(true);
+    setImages([]);
+    setValue(inputValue);
+    setInputValue('');
+    setPage(1);
   };
 
-
-  componentDidMount() {
-    this.setState({ isLoading: false });
-  }
-
-  loadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
-
-  // message = () => `Sorry... There is no ${this.value} images :(`;
-
-  async componentDidUpdate(prevState, nextState) {
-    if (
-      nextState.value !== this.state.value ||
-      nextState.page !== this.state.page
-    ) {
-      const { value, page } = this.state;
-      const images = await fetchApi(value, page);
-      this.setState(prevState => ({
-        images: [...prevState.images, ...images],
-        isLoading: false,
-      }));
-    }
-  }
-
-  render() {
-    const { page, value, inputValue, images, isLoading } = this.state;
-
-    return (
-      <div className="App">
-        <Searchbar
-          value={value}
-          onChange={this.onChange}
-          onSubmit={this.onSubmit}
-          inputValue={inputValue}
-        />
-        <ImageGallery
-          images={images}
-          page={page}
-          loadMore={this.loadMore}
-          isLoading={isLoading}
-          // message={this.message}
-        />
-      </div>
-    );
-  }
+  useEffect(() => {
+    setIsLoading(false)
+  }, [])
+  
+  useEffect(() => {
+      const fetchImages = async () => {
+        const getImages = await fetchApi(value, page);
+        setImages(prevImages => [...prevImages, ...getImages])
+        setIsLoading(false)
+      }
+      fetchImages()
+    }, [page, value]);
+    
+    const loadMore = () => {
+      setPage(page + 1);
+    };
+    
+  return (
+    <div className="App">
+      <Searchbar
+        value={value}
+        onChange={onChange}
+        onSubmit={onSubmit}
+        inputValue={inputValue}
+      />
+      <ImageGallery
+        images={images}
+        loadMore={loadMore}
+        isLoading={isLoading}
+      // message={this.message}
+      />
+    </div>
+  )
 };

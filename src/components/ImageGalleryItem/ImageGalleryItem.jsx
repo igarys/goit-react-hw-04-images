@@ -1,29 +1,21 @@
 import { Modal } from 'components/Modal';
-import { Component } from 'react';
+import { useState } from 'react';
 import css from './ImageGalleryItem.module.css';
 
+export const ImageGalleryItem = ({image}) =>  {
 
-export class ImageGalleryItem extends Component {
-  state = {
-    isOpen: false,
+  const [isOpen, setIsOpen] = useState(false)
+
+  const  handleClick = () => {
+    setIsOpen(!isOpen);
   };
 
-  handleClick = () => {
-    this.setState(modal => ({ isOpen: !modal.isOpen }));
-  };
-
-  handleKeyDown = (evt) => {
+  const handleKeyDown = (evt) => {
     if (evt.key === 'Escape') {
-      this.setState(modal => ({ isOpen: !modal.isOpen }));
+      setIsOpen(!isOpen);
     }
   }
-
-
   // message = () => `Sorry... There is no ${this.value} images :(`;
-
-  render() {
-    const { isOpen } = this.state;
-    const { image } = this.props;
 
     return (
       <li key={image.id} className={css.ImageGalleryItem}>
@@ -31,17 +23,16 @@ export class ImageGalleryItem extends Component {
           className={css.ImageGalleryItemImage}
           src={image.webformatURL}
           alt={image.tags}
-          onClick={this.handleClick}
+          onClick={handleClick}
         />
         {isOpen && (
           <Modal
             largeImageURL={image.largeImageURL}
             alt={image.tags}
-            handleClick={this.handleClick}
-            handleKeyDown={this.handleKeyDown}
+            handleClick={handleClick}
+            handleKeyDown={handleKeyDown}
           />
         )}
       </li>
-    );
+    )
   }
-}
