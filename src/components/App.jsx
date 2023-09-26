@@ -1,8 +1,7 @@
 import { ImageGallery } from "./ImageGallery";
 import { Searchbar } from "./Searchbar";
 import {fetchApi} from '../services'
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from 'react';
 import './styles.css';
 
 export const App = () => {
@@ -12,7 +11,9 @@ export const App = () => {
   const [images, setImages] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [page, setPage] = useState(1)
-
+  const [isLoaded, setIsLoaded] = useState(false)
+  // let loadedRef = useRef(false)
+  
   const onChange = e => {
     setInputValue(e.target.value);
   };
@@ -27,16 +28,21 @@ export const App = () => {
 
   useEffect(() => {
     setIsLoading(false)
+    setIsLoaded(true)
   }, [])
   
   useEffect(() => {
+    console.log(isLoaded)
+    if (!isLoaded) return;
+    {
       const fetchImages = async () => {
         const getImages = await fetchApi(value, page);
         setImages(prevImages => [...prevImages, ...getImages])
         setIsLoading(false)
       }
       fetchImages()
-    }, [page, value]);
+    }
+    }, [ page, value]);
     
     const loadMore = () => {
       setPage(page + 1);
