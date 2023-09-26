@@ -37,12 +37,13 @@ export const App = () => {
     {
       const fetchImages = async () => {
         const getImages = await fetchApi(value, page);
-        setImages(prevImages => [...prevImages, ...getImages])
-        setIsLoading(false)
-      }
-      fetchImages()
+        setImages(prevImages => [...prevImages, ...getImages]);
+        setIsLoading(false);
+      };
+      fetchImages();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
-    }, [ page, value]);
+    }, [page, value]);
     
     const loadMore = () => {
       setPage(page + 1);
