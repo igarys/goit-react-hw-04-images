@@ -1,7 +1,7 @@
 import { ImageGallery } from "./ImageGallery";
 import { Searchbar } from "./Searchbar";
 import {fetchApi} from '../services'
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './styles.css';
 
 export const App = () => {
@@ -34,7 +34,6 @@ export const App = () => {
   useEffect(() => {
     console.log(isLoaded)
     if (!isLoaded) return;
-    {
       const fetchImages = async () => {
         const getImages = await fetchApi(value, page);
         setImages(prevImages => [...prevImages, ...getImages]);
@@ -42,7 +41,6 @@ export const App = () => {
       };
       fetchImages();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }
     }, [page, value]);
     
     const loadMore = () => {
